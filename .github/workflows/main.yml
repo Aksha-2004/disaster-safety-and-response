@@ -3,7 +3,7 @@ name: Build Flutter APK
 on:
   push:
     branches:
-      - main  # Change to your branch if different
+      - main
 
 jobs:
   build:
@@ -17,10 +17,15 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'  # Use your desired version
+          flutter-version: '3.22.0'
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Patch flutter_sms to add namespace
+        run: |
+          sed -i '/^android {/a \    namespace "com.example.flutter_sms"' \
+          $HOME/.pub-cache/hosted/pub.dev/flutter_sms-*/android/build.gradle
 
       - name: Build APK
         run: flutter build apk --release
