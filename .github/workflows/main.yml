@@ -22,10 +22,17 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Patch flutter_sms to add namespace
+      - name: Patch flutter_sms and nearby_connections namespaces
         run: |
-          sed -i '/^android {/a \    namespace "com.example.flutter_sms"' \
-          $HOME/.pub-cache/hosted/pub.dev/flutter_sms-*/android/build.gradle
+          # Patch flutter_sms
+          for file in $HOME/.pub-cache/hosted/pub.dev/flutter_sms-*/android/build.gradle; do
+            sed -i '/^android {/a \    namespace "com.example.flutter_sms"' "$file"
+          done
+
+          # Patch nearby_connections
+          for file in $HOME/.pub-cache/hosted/pub.dev/nearby_connections-*/android/build.gradle; do
+            sed -i '/^android {/a \    namespace "com.example.nearby_connections"' "$file"
+          done
 
       - name: Build APK
         run: flutter build apk --release
@@ -35,3 +42,4 @@ jobs:
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
+
