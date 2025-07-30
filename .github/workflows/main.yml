@@ -24,17 +24,21 @@ jobs:
 
       - name: Patch flutter_sms & nearby_connections
         run: |
-          # Patch flutter_sms build.gradle.kts
-          for file in $HOME/.pub-cache/hosted/pub.dev/flutter_sms-*/android/build.gradle.kts; do
-            echo "Patching flutter_sms build.gradle.kts: $file"
-            sed -i '/android {/a \    namespace = "com.example.flutter_sms"' "$file"
-            sed -i 's/kotlin-gradle-plugin:[0-9.]\+/kotlin-gradle-plugin:1.9.23/g' "$file"
+          # Patch flutter_sms
+          for file in $HOME/.pub-cache/hosted/pub.dev/flutter_sms-*/android/build.gradle; do
+            if [ -f "$file" ]; then
+              echo "Patching flutter_sms build.gradle: $file"
+              sed -i '/^android {/a \    namespace "com.example.flutter_sms"' "$file"
+              sed -i 's/org.jetbrains.kotlin:kotlin-gradle-plugin:[^"]*/org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10/g' "$file"
+            fi
           done
 
-          # Patch nearby_connections build.gradle.kts
-          for file in $HOME/.pub-cache/hosted/pub.dev/nearby_connections-*/android/build.gradle.kts; do
-            echo "Patching nearby_connections build.gradle.kts: $file"
-            sed -i '/android {/a \    namespace = "com.example.nearby_connections"' "$file"
+          # Patch nearby_connections
+          for file in $HOME/.pub-cache/hosted/pub.dev/nearby_connections-*/android/build.gradle; do
+            if [ -f "$file" ]; then
+              echo "Patching nearby_connections build.gradle: $file"
+              sed -i '/^android {/a \    namespace "com.example.nearby_connections"' "$file"
+            fi
           done
 
       - name: Build APK
