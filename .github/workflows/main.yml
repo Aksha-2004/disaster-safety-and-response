@@ -24,29 +24,31 @@ jobs:
 
       - name: Patch flutter_sms & nearby_connections
         run: |
+          echo "Patching flutter_sms and nearby_connections..."
+
           # Patch flutter_sms build.gradle
           for file in $HOME/.pub-cache/hosted/pub.dev/flutter_sms-*/android/build.gradle; do
-            echo "Patching flutter_sms build.gradle: $file"
+            echo "Patching: $file"
             sed -i '/^android {/a \    namespace "com.example.flutter_sms"' "$file"
             sed -i 's/org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50/org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10/g' "$file"
           done
 
           # Patch nearby_connections build.gradle
           for file in $HOME/.pub-cache/hosted/pub.dev/nearby_connections-*/android/build.gradle; do
-            echo "Patching nearby_connections build.gradle: $file"
+            echo "Patching: $file"
             sed -i '/^android {/a \    namespace "com.example.nearby_connections"' "$file"
           done
 
-          # ✅ Remove deprecated package attribute from AndroidManifest.xml
+          # Remove deprecated package attribute from AndroidManifest.xml
           for file in $HOME/.pub-cache/hosted/pub.dev/nearby_connections-*/android/src/main/AndroidManifest.xml; do
-            echo "Removing deprecated package attribute from: $file"
+            echo "Cleaning: $file"
             sed -i '/package="com.pkmnapps.nearby_connections"/d' "$file"
           done
 
-      - name: Build APK
+      - name: Build release APK
         run: flutter build apk --release
 
-      - name: Upload APK artifact
+      - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
