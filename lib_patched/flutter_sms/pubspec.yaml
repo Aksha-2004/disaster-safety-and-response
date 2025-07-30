@@ -1,0 +1,20 @@
+name: flutter_sms
+description: Flutter plugin to send SMS directly from app.
+version: 2.3.1
+homepage: https://github.com/shounakmulay/flutter_sms
+publish_to: "none"
+
+environment:
+  sdk: ">=2.17.0 <4.0.0"
+  flutter: ">=3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.shounakmulay.flutter_sms
+        pluginClass: FlutterSmsPlugin
