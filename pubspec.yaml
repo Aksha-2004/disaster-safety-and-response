@@ -19,8 +19,10 @@ dependencies:
   geocoding: ^2.1.0
   intl: ^0.18.1
   nearby_connections: ^3.0.2
-  flutter_sms: ^2.3.1
   permission_handler: ^11.3.0
+
+  flutter_sms:
+    path: lib_patched/flutter_sms # ✅ Use your local patched plugin here
 
 dev_dependencies:
   flutter_lints: 4.0.0
@@ -29,4 +31,4 @@ dev_dependencies:
   mockito: ^5.4.4
 
 flutter:
-  uses-material-design: true   
+  uses-material-design: true
