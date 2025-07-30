@@ -24,21 +24,23 @@ jobs:
 
       - name: Patch flutter_sms & nearby_connections
         run: |
-          # Patch flutter_sms
+          # Patch flutter_sms build.gradle
           for file in $HOME/.pub-cache/hosted/pub.dev/flutter_sms-*/android/build.gradle; do
-            if [ -f "$file" ]; then
-              echo "Patching flutter_sms build.gradle: $file"
-              sed -i '/^android {/a \    namespace "com.example.flutter_sms"' "$file"
-              sed -i 's/org.jetbrains.kotlin:kotlin-gradle-plugin:[^"]*/org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10/g' "$file"
-            fi
+            echo "Patching flutter_sms build.gradle: $file"
+            sed -i '/^android {/a \    namespace "com.example.flutter_sms"' "$file"
+            sed -i 's/org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50/org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10/g' "$file"
           done
 
-          # Patch nearby_connections
+          # Patch nearby_connections build.gradle
           for file in $HOME/.pub-cache/hosted/pub.dev/nearby_connections-*/android/build.gradle; do
-            if [ -f "$file" ]; then
-              echo "Patching nearby_connections build.gradle: $file"
-              sed -i '/^android {/a \    namespace "com.example.nearby_connections"' "$file"
-            fi
+            echo "Patching nearby_connections build.gradle: $file"
+            sed -i '/^android {/a \    namespace "com.example.nearby_connections"' "$file"
+          done
+
+          # ✅ Remove deprecated package attribute from AndroidManifest.xml
+          for file in $HOME/.pub-cache/hosted/pub.dev/nearby_connections-*/android/src/main/AndroidManifest.xml; do
+            echo "Removing deprecated package attribute from: $file"
+            sed -i '/package="com.pkmnapps.nearby_connections"/d' "$file"
           done
 
       - name: Build APK
@@ -49,5 +51,3 @@ jobs:
         with:
           name: release-apk
           path: build/app/outputs/flutter-apk/app-release.apk
-
-
