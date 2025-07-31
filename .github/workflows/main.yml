@@ -26,12 +26,25 @@ jobs:
         run: |
           echo "Patching flutter_sms and nearby_connections..."
 
-          # Patch flutter_sms build.gradle
+          # Patch flutter_sms build.gradle and plugin class
           for file in $HOME/.pub-cache/hosted/pub.dev/flutter_sms-*/android/build.gradle; do
             echo "Patching: $file"
             sed -i '/^android {/a \    namespace "com.example.flutter_sms"' "$file"
             sed -i 's/org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50/org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10/g' "$file"
           done
+
+          # Add FlutterSmsPlugin.kt if not exists (pluginClass requirement)
+          plugin_path="$HOME/.pub-cache/hosted/pub.dev/flutter_sms-*/android/src/main/kotlin/com/example/flutter_sms"
+          mkdir -p "$plugin_path"
+          echo 'package com.example.flutter_sms
+
+import androidx.annotation.NonNull
+import io.flutter.embedding.engine.plugins.FlutterPlugin
+
+class FlutterSmsPlugin : FlutterPlugin {
+  override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {}
+  override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {}
+}' > "$plugin_path/FlutterSmsPlugin.kt"
 
           # Patch nearby_connections build.gradle
           for file in $HOME/.pub-cache/hosted/pub.dev/nearby_connections-*/android/build.gradle; do
